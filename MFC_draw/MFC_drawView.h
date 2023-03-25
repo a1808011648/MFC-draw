@@ -1,5 +1,4 @@
-﻿
-// MFC_drawView.h: CMFCdrawView 类的接口
+﻿// MFC_drawView.h: CMFCdrawView 类的接口
 //
 
 #pragma once
