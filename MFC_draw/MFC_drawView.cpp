@@ -28,12 +28,22 @@ BEGIN_MESSAGE_MAP(CMFCdrawView, CView)
 	ON_WM_LBUTTONDOWN()
 //	ON_WM_NCLBUTTONUP()
 ON_WM_LBUTTONUP()
-ON_WM_RBUTTONDOWN()
-ON_WM_RBUTTONUP()
+//ON_WM_RBUTTONDOWN()
+//ON_WM_RBUTTONUP()
 //ON_WM_CHAR()
 ON_WM_KEYDOWN()
 ON_WM_CREATE()
 ON_WM_TIMER()
+ON_COMMAND(ID_DRAW_LINE, &CMFCdrawView::OnDrawLine)
+ON_COMMAND(ID_DRAW_RECT, &CMFCdrawView::OnDrawRect)
+ON_COMMAND(ID_DRAW_ELLIPSE, &CMFCdrawView::OnDrawEllipse)
+ON_COMMAND(ID_DRAW_PEN, &CMFCdrawView::OnDrawPen)
+ON_WM_MOUSEMOVE()
+ON_UPDATE_COMMAND_UI(ID_DRAW_LINE, &CMFCdrawView::OnUpdateDrawLine)
+ON_UPDATE_COMMAND_UI(ID_DRAW_PEN, &CMFCdrawView::OnUpdateDrawPen)
+ON_UPDATE_COMMAND_UI(ID_DRAW_RECT, &CMFCdrawView::OnUpdateDrawRect)
+ON_UPDATE_COMMAND_UI(ID_DRAW_ELLIPSE, &CMFCdrawView::OnUpdateDrawEllipse)
+ON_WM_RBUTTONUP()
 END_MESSAGE_MAP()
 
 // CMFCdrawView 构造/析构
@@ -41,8 +51,9 @@ END_MESSAGE_MAP()
 CMFCdrawView::CMFCdrawView() noexcept
 {
 	// TODO: 在此处添加构造代码
-
+	m_drawType = DT_LINE;
 	m_nWidth = 0;
+	m_bLine = false;
 }
 
 CMFCdrawView::~CMFCdrawView()
@@ -53,7 +64,7 @@ BOOL CMFCdrawView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: 在此处通过修改
 	//  CREATESTRUCT cs 来修改窗口类或样式
-
+	m_menu.LoadMenuW(IDR_MENU1);
 	return CView::PreCreateWindow(cs);
 }
 
@@ -78,7 +89,7 @@ void CMFCdrawView::OnDraw(CDC* /*pDC*/)
 void CMFCdrawView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 {
 #ifndef SHARED_HANDLERS
-	theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
+	//theApp.GetContextMenuManager()->ShowPopupMenu(IDR_POPUP_EDIT, point.x, point.y, this, TRUE);
 #endif
 }
 
@@ -112,6 +123,10 @@ void CMFCdrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	//保存起点到成员变量
 	m_point = point; 
+	if (m_drawType == DT_PEN) {
+		m_bLine = true;
+	}
+	
 	CView::OnLButtonDown(nFlags, point);
 }
 
@@ -130,24 +145,37 @@ void CMFCdrawView::OnLButtonUp(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	//两点之间画线
 	//获取设备上下文
-	CDC* pDC = GetDC();
+	m_bLine = false;
+	CClientDC dc(this);
 
-	//画笔
-	CPen pen(PS_DOT, 1, RGB(255, 0, 0));
+	//设置画笔和画刷
+	CPen pen(PS_SOLID, 2, RGB(255, 0, 0));
+	CPen* oldPen = dc.SelectObject(&pen);
+	CBrush* brush = CBrush::FromHandle((HBRUSH)GetStockObject(NULL_BRUSH));
+	CBrush* oldBrush = dc.SelectObject(brush);
+	CRect rect(m_point, point);
+	switch (m_drawType)
+	{
+	case DT_LINE:
+		dc.MoveTo(m_point);
+		dc.LineTo(point);
+		break;
+	case DT_RECT:
+		dc.Rectangle(rect);
+		break;
+	case DT_ELLIPSE:
+		dc.Ellipse(rect);
+		break;
+	default:
+		break;
+	}
 
-	//设备更换新画笔 保留之前的画笔
-	CPen* pOldPen = pDC->SelectObject(&pen);
+	//恢复设备
+	dc.SelectObject(oldBrush);
+	dc.SelectObject(oldPen);
 
+	
 
-	//函数说明：画笔移动到起始点
-	pDC->MoveTo(m_point);
-	//从起点到终点画线
-	pDC->LineTo(point);
-	//释放设备上下文
-
-	//恢复原来的画笔
-	pDC->SelectObject(pOldPen);
-	ReleaseDC(pDC);
 	
 
 
@@ -155,38 +183,7 @@ void CMFCdrawView::OnLButtonUp(UINT nFlags, CPoint point)
 }
 
 
-void CMFCdrawView::OnRButtonDown(UINT nFlags, CPoint point)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	m_point = point;
-	CView::OnRButtonDown(nFlags, point);
-}
 
-
-void CMFCdrawView::OnRButtonUp(UINT nFlags, CPoint point)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-
-	//获取设备上下文
-	CClientDC dc(this);
-
-	//设置设备画刷
-	//CBrush* brush = CBrush::FromHandle((HBRUSH)GetStockObject(NULL_BRUSH));
-
-	//CBrush* oldBrush = dc.SelectObject(brush);
-
-	CBitmap bitmap;
-	bitmap.LoadBitmap(IDB_BITMAP1);
-	CBrush brush(&bitmap);
-
-	CBrush* oldBrush = dc.SelectObject(&brush);
-	//画矩形
-	dc.FillRect(CRect(m_point, point),&brush);
-
-	//恢复原画刷
-	dc.SelectObject(oldBrush);
-	CView::OnRButtonUp(nFlags, point);
-}
 
 
 //void CMFCdrawView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -235,7 +232,7 @@ int CMFCdrawView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	// TODO:  在此添加您专用的创建代码
-	SetTimer(TIMER_TEXT, 100, NULL);
+	//SetTimer(TIMER_TEXT, 100, NULL);
 
 	return 0;
 }
@@ -282,4 +279,94 @@ void CMFCdrawView::OnTimer(UINT_PTR nIDEvent)
 	}
 
 	CView::OnTimer(nIDEvent);
+}
+
+
+void CMFCdrawView::OnDrawLine()
+{
+	// TODO: 在此添加命令处理程序代码
+	m_drawType = DT_LINE;
+}
+
+
+void CMFCdrawView::OnDrawRect()
+{
+	// TODO: 在此添加命令处理程序代码
+	m_drawType = DT_RECT;
+}
+
+
+void CMFCdrawView::OnDrawEllipse()
+{
+	// TODO: 在此添加命令处理程序代码
+	m_drawType = DT_ELLIPSE;
+}
+
+
+void CMFCdrawView::OnDrawPen()
+{
+	// TODO: 在此添加命令处理程序代码
+	m_drawType = DT_PEN;
+}
+
+
+void CMFCdrawView::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	if (m_bLine) {
+		CClientDC dc(this);
+
+		//画线 设置画笔
+		CPen pen(PS_SOLID, 2, RGB(255, 0, 0));
+		CPen* oldPen = dc.SelectObject(&pen);
+		dc.MoveTo(m_point);
+		dc.LineTo(point);
+		m_point = point;
+
+		//恢复设备
+		dc.SelectObject(oldPen);
+	}
+	CView::OnMouseMove(nFlags, point);
+}
+
+
+void CMFCdrawView::OnUpdateDrawLine(CCmdUI* pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
+	pCmdUI->SetCheck(m_drawType == DT_LINE);
+}
+
+
+void CMFCdrawView::OnUpdateDrawPen(CCmdUI* pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
+	pCmdUI->SetCheck(m_drawType == DT_PEN);
+}
+
+
+void CMFCdrawView::OnUpdateDrawRect(CCmdUI* pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
+	pCmdUI->SetCheck(m_drawType == DT_RECT);
+}
+
+
+void CMFCdrawView::OnUpdateDrawEllipse(CCmdUI* pCmdUI)
+{
+	// TODO: 在此添加命令更新用户界面处理程序代码
+	pCmdUI->SetCheck(m_drawType == DT_ELLIPSE);
+}
+
+
+void CMFCdrawView::OnRButtonUp(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+
+	CMenu* mu = m_menu.GetSubMenu(0);
+
+	ClientToScreen(&point);
+
+	mu->TrackPopupMenu(TPM_LEFTALIGN, point.x, point.y,this);
+
+	CView::OnRButtonUp(nFlags, point);
 }

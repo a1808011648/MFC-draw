@@ -3,7 +3,6 @@
 // 供 MFCdraw.rc 使用
 //
 #define IDD_ABOUTBOX                    100
-#define IDR_POPUP_EDIT                  119
 #define ID_STATUSBAR_PANE1              120
 #define ID_STATUSBAR_PANE2              121
 #define IDS_STATUS_PANE1                122
@@ -30,13 +29,28 @@
 #define IDS_EDIT_MENU                   306
 #define IDC_CURSOR1                     310
 #define IDB_BITMAP1                     311
+#define IDR_MENU1                       312
+#define ID_32771                        32771
+#define ID_32772                        32772
+#define ID_32773                        32773
+#define ID_32774                        32774
+#define ID_DRAW_LINE                    32775
+#define ID_DRAW_RECT                    32776
+#define ID_DRAW_ELLIPSE                 32777
+#define ID_DRAW_PEN                     32778
+#define ID_BUTTON32800                  32800
+#define ID_BUTTON32804                  32804
+#define ID_32806                        32806
+#define ID_32807                        32807
+#define ID_Menu                         32808
+#define ID_32809                        32809
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        312
-#define _APS_NEXT_COMMAND_VALUE         32771
+#define _APS_NEXT_RESOURCE_VALUE        313
+#define _APS_NEXT_COMMAND_VALUE         32810
 #define _APS_NEXT_CONTROL_VALUE         1000
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

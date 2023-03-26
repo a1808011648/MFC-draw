@@ -134,6 +134,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 //	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+
 };
 
 CAboutDlg::CAboutDlg() noexcept : CDialogEx(IDD_ABOUTBOX)
@@ -147,6 +148,8 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 //	ON_WM_LBUTTONUP()
+
+
 END_MESSAGE_MAP()
 
 // 用于运行对话框的应用程序命令
@@ -160,11 +163,11 @@ void CMFCdrawApp::OnAppAbout()
 
 void CMFCdrawApp::PreLoadState()
 {
-	BOOL bNameValid;
-	CString strName;
-	bNameValid = strName.LoadString(IDS_EDIT_MENU);
-	ASSERT(bNameValid);
-	GetContextMenuManager()->AddMenu(strName, IDR_POPUP_EDIT);
+	//BOOL bNameValid;
+	//CString strName;
+	//bNameValid = strName.LoadString(IDS_EDIT_MENU);
+	//ASSERT(bNameValid);
+	//GetContextMenuManager()->AddMenu(strName, IDR_POPUP_EDIT);
 }
 
 void CMFCdrawApp::LoadCustomState()
@@ -175,15 +178,22 @@ void CMFCdrawApp::SaveCustomState()
 {
 }
 
+int CMFCdrawApp::ExitInstance()
+{
+	AfxOleTerm(FALSE);
+	this->CleanState();                //清空注册表信息  
+	return CWinAppEx::ExitInstance();
+
+	
+}
+
 // CMFCdrawApp 消息处理程序
 
 
 
 
 
-//void CAboutDlg::OnLButtonUp(UINT nFlags, CPoint point)
-//{
-//	// TODO: 在此添加消息处理程序代码和/或调用默认值
-//
-//	CDialogEx::OnLButtonUp(nFlags, point);
-//}
+
+
+
+
