@@ -208,6 +208,7 @@
     <ResourceCompile Include="MFCdraw.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\bitmap1.bmp" />
     <Image Include="res\MFC_draw.ico" />
     <Image Include="res\MFC_drawDoc.ico" />
     <Image Include="res\Toolbar.bmp" />
@@ -215,6 +216,7 @@
     <Image Include="res\userimages.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\cursor1.cur" />
     <None Include="res\MFCdraw.rc2" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
