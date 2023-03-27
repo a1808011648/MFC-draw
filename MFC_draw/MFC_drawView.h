@@ -78,6 +78,11 @@ protected:
 	CMenu m_menu;
 public:
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnFileSetup();
+protected:
+	UINT m_nLineWidth;
+	int m_nLineStyle;
+	COLORREF m_color;
 };
 
 #ifndef _DEBUG  // MFC_drawView.cpp 中的调试版本

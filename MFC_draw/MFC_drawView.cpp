@@ -16,6 +16,7 @@
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
+#include "SetUp.h"
 
 
 // CMFCdrawView
@@ -44,6 +45,7 @@ ON_UPDATE_COMMAND_UI(ID_DRAW_PEN, &CMFCdrawView::OnUpdateDrawPen)
 ON_UPDATE_COMMAND_UI(ID_DRAW_RECT, &CMFCdrawView::OnUpdateDrawRect)
 ON_UPDATE_COMMAND_UI(ID_DRAW_ELLIPSE, &CMFCdrawView::OnUpdateDrawEllipse)
 ON_WM_RBUTTONUP()
+ON_COMMAND(ID_FILE_SETUP, &CMFCdrawView::OnFileSetup)
 END_MESSAGE_MAP()
 
 // CMFCdrawView 构造/析构
@@ -54,6 +56,8 @@ CMFCdrawView::CMFCdrawView() noexcept
 	m_drawType = DT_LINE;
 	m_nWidth = 0;
 	m_bLine = false;
+	m_nLineWidth = 1;
+	m_nLineStyle = 0;
 }
 
 CMFCdrawView::~CMFCdrawView()
@@ -149,7 +153,7 @@ void CMFCdrawView::OnLButtonUp(UINT nFlags, CPoint point)
 	CClientDC dc(this);
 
 	//设置画笔和画刷
-	CPen pen(PS_SOLID, 2, RGB(255, 0, 0));
+	CPen pen(m_nLineStyle, m_nLineWidth, m_color);
 	CPen* oldPen = dc.SelectObject(&pen);
 	CBrush* brush = CBrush::FromHandle((HBRUSH)GetStockObject(NULL_BRUSH));
 	CBrush* oldBrush = dc.SelectObject(brush);
@@ -210,7 +214,7 @@ void CMFCdrawView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		font.CreatePointFont(200, _T("华文行楷"), NULL);
 		CFont* oldFont = dc.SelectObject(&font);
 		COLORREF oldcolore;
-		oldcolore = dc.SetTextColor(RGB(255, 0, 0));
+		oldcolore = dc.SetTextColor(m_color);
 
 		//画出字体
 		CString cstr = _T("你好啊，亲爱的!");
@@ -247,7 +251,7 @@ void CMFCdrawView::OnTimer(UINT_PTR nIDEvent)
 	CFont font;
 	font.CreatePointFont(200, _T("华文行楷"),NULL);
 	CFont* oldFont = dc.SelectObject(&font);
-	COLORREF oldColor = dc.SetTextColor(RGB(255, 0, 0));
+	COLORREF oldColor = dc.SetTextColor(m_color);
 	
 	//准备参数
 	CString str(_T("我有一言，不知当讲不当讲!\n我有一错，不知当认不当认！\n我曾言错！如今悔过！"));
@@ -317,7 +321,7 @@ void CMFCdrawView::OnMouseMove(UINT nFlags, CPoint point)
 		CClientDC dc(this);
 
 		//画线 设置画笔
-		CPen pen(PS_SOLID, 2, RGB(255, 0, 0));
+		CPen pen(m_nLineStyle, m_nLineWidth, m_color);
 		CPen* oldPen = dc.SelectObject(&pen);
 		dc.MoveTo(m_point);
 		dc.LineTo(point);
@@ -369,4 +373,20 @@ void CMFCdrawView::OnRButtonUp(UINT nFlags, CPoint point)
 	mu->TrackPopupMenu(TPM_LEFTALIGN, point.x, point.y,this);
 
 	CView::OnRButtonUp(nFlags, point);
+}
+
+
+void CMFCdrawView::OnFileSetup()
+{
+	// TODO: 在此添加命令处理程序代码
+	SetUp slid;
+	slid.m_nLisder = m_nLineWidth;
+	slid.m_nLineStyle = m_nLineStyle;
+	slid.m_color = m_color;
+	if (IDOK == slid.DoModal()) {
+		m_nLineWidth = slid.m_nLisder;
+		m_nLineStyle = slid.m_nLineStyle;
+		m_color = slid.m_color;
+	}
+
 }
