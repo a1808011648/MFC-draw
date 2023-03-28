@@ -135,6 +135,8 @@ protected:
 public:
 //	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 
+	afx_msg void OnTRBNThumbPosChangingSlider1(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnNMReleasedcaptureSlider1(NMHDR* pNMHDR, LRESULT* pResult);
 };
 
 CAboutDlg::CAboutDlg() noexcept : CDialogEx(IDD_ABOUTBOX)
@@ -150,6 +152,8 @@ BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 //	ON_WM_LBUTTONUP()
 
 
+ON_NOTIFY(TRBN_THUMBPOSCHANGING, IDC_SLIDER1, &CAboutDlg::OnTRBNThumbPosChangingSlider1)
+ON_NOTIFY(NM_RELEASEDCAPTURE, IDC_SLIDER1, &CAboutDlg::OnNMReleasedcaptureSlider1)
 END_MESSAGE_MAP()
 
 // 用于运行对话框的应用程序命令
@@ -197,3 +201,24 @@ int CMFCdrawApp::ExitInstance()
 
 
 
+
+
+void CAboutDlg::OnTRBNThumbPosChangingSlider1(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	// 此功能要求 Windows Vista 或更高版本。
+	// _WIN32_WINNT 符号必须 >= 0x0600。
+	NMTRBTHUMBPOSCHANGING* pNMTPC = reinterpret_cast<NMTRBTHUMBPOSCHANGING*>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	
+	
+	
+	*pResult = 0;
+}
+
+
+void CAboutDlg::OnNMReleasedcaptureSlider1(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	// TODO: 在此添加控件通知处理程序代码
+	
+	*pResult = 0;
+}

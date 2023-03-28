@@ -83,6 +83,7 @@ protected:
 	UINT m_nLineWidth;
 	int m_nLineStyle;
 	COLORREF m_color;
+	
 };
 
 #ifndef _DEBUG  // MFC_drawView.cpp 中的调试版本

@@ -58,6 +58,7 @@ CMFCdrawView::CMFCdrawView() noexcept
 	m_bLine = false;
 	m_nLineWidth = 1;
 	m_nLineStyle = 0;
+	
 }
 
 CMFCdrawView::~CMFCdrawView()
@@ -82,6 +83,8 @@ void CMFCdrawView::OnDraw(CDC* /*pDC*/)
 		return;
 
 	// TODO: 在此处为本机数据添加绘制代码
+	
+
 }
 
 //void CMFCdrawView::OnRButtonUp(UINT /* nFlags */, CPoint point)

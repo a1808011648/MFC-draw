@@ -37,6 +37,7 @@
 #define IDC_RADIO3                      1004
 #define IDC_BUTTON1                     1005
 #define IDC_COLOR                       1005
+#define IDC_EXAMPLES                    1006
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_32773                        32773
@@ -60,7 +61,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        315
 #define _APS_NEXT_COMMAND_VALUE         32812
-#define _APS_NEXT_CONTROL_VALUE         1006
+#define _APS_NEXT_CONTROL_VALUE         1007
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
