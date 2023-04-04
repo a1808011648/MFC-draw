@@ -2,7 +2,7 @@
 //
 
 #pragma once
-
+#include "Graph.h"
 enum DRAW_TYPE
 {
 	DT_LINE=0,
@@ -77,12 +77,14 @@ public:
 protected:
 	CMenu m_menu;
 public:
+	std::vector<Graph> m_Graph;  //存放之前绘画的记录
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnFileSetup();
 protected:
 	UINT m_nLineWidth;
 	int m_nLineStyle;
 	COLORREF m_color;
+	
 	
 };
 

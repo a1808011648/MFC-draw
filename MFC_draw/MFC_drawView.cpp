@@ -75,7 +75,7 @@ BOOL CMFCdrawView::PreCreateWindow(CREATESTRUCT& cs)
 
 // CMFCdrawView 绘图
 
-void CMFCdrawView::OnDraw(CDC* /*pDC*/)
+void CMFCdrawView::OnDraw(CDC* pDC)
 {
 	CMFCdrawDoc* pDoc = GetDocument();
 	ASSERT_VALID(pDoc);
@@ -83,7 +83,50 @@ void CMFCdrawView::OnDraw(CDC* /*pDC*/)
 		return;
 
 	// TODO: 在此处为本机数据添加绘制代码
-	
+	int len = m_Graph.size();
+
+	//窗口重绘时，将之前存放的绘画记录重新画出来
+	for (int i = 0 ; i < len; i++)
+	{
+		Graph* tempGr = &(m_Graph.at(i));
+		CPen pen(tempGr->m_nLineStyle, tempGr->m_penSize, tempGr->m_color);
+		CPen* oldPen = pDC->SelectObject(&pen);
+		CBrush* brush = CBrush::FromHandle((HBRUSH)GetStockObject(NULL_BRUSH));
+		CBrush* oldBrush = pDC->SelectObject(brush);
+		CRect rect(tempGr->m_arrayPoint[0], tempGr->m_arrayPoint[1]);
+		int len = tempGr->m_arrayPoint.size();
+		int j = 0;
+		switch (tempGr->m_drawType)
+		{
+		case DT_PEN:
+			while (len >= 0)
+			{
+				pDC->MoveTo(tempGr->m_arrayPoint[j]);
+				j++;
+				if (j == len - 1) {
+					break;
+				}
+				pDC->LineTo(tempGr->m_arrayPoint[j]);
+			}
+			break;
+		case DT_LINE:
+			pDC->MoveTo(tempGr->m_arrayPoint[0]);
+			pDC->LineTo(tempGr->m_arrayPoint[1]);
+			break;
+		case DT_RECT:
+			pDC->Rectangle(rect);
+			break;
+		case DT_ELLIPSE:
+			pDC->Ellipse(rect);
+			break;
+		default:
+			break;
+		}
+
+		//恢复设备
+		pDC->SelectObject(oldPen);
+		pDC->SelectObject(oldBrush);
+	}
 
 }
 
@@ -132,6 +175,9 @@ void CMFCdrawView::OnLButtonDown(UINT nFlags, CPoint point)
 	m_point = point; 
 	if (m_drawType == DT_PEN) {
 		m_bLine = true;
+		Graph tempGr;
+		tempGr.setGraph(m_drawType, m_color, m_nLineWidth,m_nLineStyle);
+		m_Graph.push_back(tempGr);
 	}
 	
 	CView::OnLButtonDown(nFlags, point);
@@ -160,7 +206,7 @@ void CMFCdrawView::OnLButtonUp(UINT nFlags, CPoint point)
 	CPen* oldPen = dc.SelectObject(&pen);
 	CBrush* brush = CBrush::FromHandle((HBRUSH)GetStockObject(NULL_BRUSH));
 	CBrush* oldBrush = dc.SelectObject(brush);
-	CRect rect(m_point, point);
+	CRect rect(m_point, point);\
 	switch (m_drawType)
 	{
 	case DT_LINE:
@@ -181,6 +227,13 @@ void CMFCdrawView::OnLButtonUp(UINT nFlags, CPoint point)
 	dc.SelectObject(oldBrush);
 	dc.SelectObject(oldPen);
 
+	//保存之前绘画的记录到CArray数组里面
+	if (m_nLineStyle != DT_PEN) {
+		Graph tempGr;
+		tempGr.setGraph(m_drawType, m_color, m_nLineWidth, m_nLineStyle);
+		tempGr.AddPoint(m_point, point);
+		m_Graph.push_back(tempGr);
+	}
 	
 
 	
@@ -329,7 +382,8 @@ void CMFCdrawView::OnMouseMove(UINT nFlags, CPoint point)
 		dc.MoveTo(m_point);
 		dc.LineTo(point);
 		m_point = point;
-
+		auto it = m_Graph.rbegin();
+		it->AddPoint(point);
 		//恢复设备
 		dc.SelectObject(oldPen);
 	}

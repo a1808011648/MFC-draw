@@ -184,6 +184,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Graph.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MFC_draw.h" />
     <ClInclude Include="MFC_drawDoc.h" />
@@ -194,6 +195,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Graph.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MFC_draw.cpp" />
     <ClCompile Include="MFC_drawDoc.cpp" />
