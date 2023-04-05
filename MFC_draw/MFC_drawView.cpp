@@ -46,6 +46,8 @@ ON_UPDATE_COMMAND_UI(ID_DRAW_RECT, &CMFCdrawView::OnUpdateDrawRect)
 ON_UPDATE_COMMAND_UI(ID_DRAW_ELLIPSE, &CMFCdrawView::OnUpdateDrawEllipse)
 ON_WM_RBUTTONUP()
 ON_COMMAND(ID_FILE_SETUP, &CMFCdrawView::OnFileSetup)
+ON_COMMAND(ID_FILE_WRITE, &CMFCdrawView::OnFileWrite)
+ON_COMMAND(ID_FILE_READ, &CMFCdrawView::OnFileRead)
 END_MESSAGE_MAP()
 
 // CMFCdrawView 构造/析构
@@ -445,5 +447,47 @@ void CMFCdrawView::OnFileSetup()
 		m_nLineStyle = slid.m_nLineStyle;
 		m_color = slid.m_color;
 	}
+	
+}
 
+
+void CMFCdrawView::OnFileWrite()
+{
+	// TODO: 在此添加命令处理程序代码
+	//创建文件对话框 FALSE模式--->写入模式
+	CFileDialog cFile(FALSE);
+
+	//准备写入的数据
+	CString str = _T("hello,wrod.\n");
+	
+	//打开文件对话框
+	if (IDOK == cFile.DoModal()) {
+		//创建CFile类传参：文件地址，标志位
+		CFile wFile(cFile.GetPathName(), CFile::modeWrite | CFile::modeCreate);
+
+		//写入方式为单个字节，而Unicode一个字符占两个字节长度要*2，传参：(Unicode编码)字符串，字符串长度(乘以TCHAR)
+		wFile.Write(str, str.GetLength() * sizeof(TCHAR));
+
+		//关闭文件
+		wFile.Close();
+		
+	}
+}
+
+
+void CMFCdrawView::OnFileRead()
+{
+	// TODO: 在此添加命令处理程序代码
+	CFileDialog cFile(TRUE);
+	if (IDOK == cFile.DoModal()) {
+
+		CFile rFile(cFile.GetPathName(), CFile::modeRead);
+		TCHAR* pBuf = NULL;
+		int length = rFile.GetLength() / sizeof(TCHAR);
+		pBuf = new TCHAR[length + 1];
+		pBuf[length] = '\0';
+		rFile.Read(pBuf, rFile.GetLength());
+		MessageBox(pBuf,_T("提示"), MB_OK);
+		rFile.Close();
+	}
 }

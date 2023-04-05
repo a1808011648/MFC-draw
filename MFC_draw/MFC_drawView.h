@@ -86,6 +86,9 @@ protected:
 	COLORREF m_color;
 	
 	
+public:
+	afx_msg void OnFileWrite();
+	afx_msg void OnFileRead();
 };
 
 #ifndef _DEBUG  // MFC_drawView.cpp 中的调试版本

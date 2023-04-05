@@ -54,13 +54,18 @@
 #define ID_32809                        32809
 #define ID_32810                        32810
 #define ID_FILE_SETUP                   32811
+#define ID_32812                        32812
+#define ID_32813                        32813
+#define ID_FILE_WRIT                    32814
+#define ID_FILE_WRITE                   32815
+#define ID_FILE_READ                    32816
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        315
-#define _APS_NEXT_COMMAND_VALUE         32812
+#define _APS_NEXT_COMMAND_VALUE         32817
 #define _APS_NEXT_CONTROL_VALUE         1007
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

@@ -11,7 +11,7 @@
 #endif
 
 #include "MFC_drawDoc.h"
-
+#include "MFC_drawView.h"
 #include <propkey.h>
 
 #ifdef _DEBUG
@@ -56,6 +56,9 @@ BOOL CMFCdrawDoc::OnNewDocument()
 
 void CMFCdrawDoc::Serialize(CArchive& ar)
 {
+	POSITION pos = GetFirstViewPosition();
+	CMFCdrawView* cView = (CMFCdrawView*)GetNextView(pos);
+	int length = cView->m_pGraphs.GetSize();
 	if (ar.IsStoring())
 	{
 		// TODO: 在此添加存储代码
